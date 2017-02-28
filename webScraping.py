@@ -1,36 +1,30 @@
 # -*- coding: utf-8 -*-
 
-import urllib2
-import bs4
-import re
-from itertools import izip_longest
+import requests
+import json
+import datetime
+from collections import namedtuple
 
 
-def getSongList(url='http://wdet.org/posts/2016/08/21/83741-the-progressive-underground-show-183-feat-jeff-canady/'):
+def getSongList(url='https://api.composer.nprstations.org/v1/widget/5182d007e1c809685c190ee6/playlist?t=1488122307580&limit=50&order=-1&datestamp=2017-02-26&time=20%3A00&prog_id=5589d32ac73b71e35604c77e&loadingMesgeId=widgetElement_55&errorMsg=Sorry%2C+there+is+no+playlist+to+display'):
     
-   # url = 'http://wdet.org/posts/2016/08/21/83741-the-progressive-underground-show-183-feat-jeff-canady/'
-    html = urllib2.urlopen(url)
-    soup = bs4.BeautifulSoup(html, 'lxml')
+    SongInfo = namedtuple('SongInfo',['songName', 'artist','album','showData'])    
     
+    r = requests.get(url)
+    parsed_json = json.loads(r.text)
+
     ##########################################################################
-    #get song data
-    rawSongData = soup.findAll("table", class_="table table-striped")
-    fullSongList = re.findall(r'<td>(.*?)</td>', str(rawSongData))
-    
-    cleanedSongList = []
-    for i in fullSongList: 
-        if i == '\\n':
-            continue
-        cleanedSongList.append(i.strip('</strong>'))
-        
-    if len(cleanedSongList) % 3 != 0:
-        print 'List is missing song information'
-    
-    #iterools magic to break list down into groups of three
-    listOfSongs = list(izip_longest(*([iter(cleanedSongList)]*3)))
+    # get song data
+    songList = []
+    for info in parsed_json['playlist'][0]['playlist']:
+        album = info[u'collectionName']
+        song = info[u'trackName']
+        artist = info[u'artistName']
+        showDate = datetime.datetime.strptime(info[u'_start_time'], '%m-%d-%Y %H:%M:%S')
+        allInfo = SongInfo(song, artist, album, showDate)
+        songList.append(allInfo)
     ##########################################################################
-    #get show date
-    showDateRaw = soup.findAll("div", class_="article-date")[0]
-    showDate = re.findall(r'''>(.*)</div''', str(showDateRaw))[0]
-    
-    return listOfSongs, showDate
+    # get show date
+
+
+    return songList

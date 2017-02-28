@@ -5,8 +5,8 @@ Created on Wed Aug 31 08:12:24 2016
 @author: tzupan
 """
 
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
+#from selenium import webdriver
+#from selenium.webdriver.chrome.options import Options
 import os
 import time
 import webScraping as ws
@@ -16,13 +16,14 @@ reload(ws)
 reload(tf)
 reload(selen)
 
+
 def addSongstoDB(url):
-    #create table if it does not exist
-    
+    # create table if it does not exist
+
     tf.createTable()
-    songsAdded = 0    
-    songList, showDate = ws.getSongList(url)
-    for song, artist, album in songList:
+    songsAdded = 0
+    songList = ws.getSongList(url)
+    for song, artist, album, showDate in songList:
         if tf.recordInTable(song):
             print 'Song already in database'
             continue
@@ -36,15 +37,15 @@ def addSongstoDB(url):
 def playVideos(queries):
     for q in queries:
         video_id, video_length = selen.firstVideoId(q)
-    
+
         # Chromedriver download
-        #had to put chromedriver.exe in same directory as python code
-        chrome_options=Options()
+        # had to put chromedriver.exe in same directory as python code
+        chrome_options = Options()
         extensionPath = os.path.join('t_google_extensions')
         chrome_options.add_extension(extensionPath)
         driver = webdriver.Chrome(chrome_options=chrome_options)
         driver.get('https://www.youtube.com/watch?v={}'.format(video_id))
-         
+
         try:
             m,s = video_length.split(':')
         except ValueError:
@@ -67,9 +68,9 @@ def songList():
 
 def main(url):
     #optional, will add choice to command line args
-    #addSongstoDB(url)
+    addSongstoDB(url)
     finalList = songList()
     print finalList
-    playVideos(finalList)
+    #playVideos(finalList)
     
         
