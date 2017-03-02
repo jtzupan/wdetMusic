@@ -5,8 +5,8 @@ Created on Wed Aug 31 08:12:24 2016
 @author: tzupan
 """
 
-#from selenium import webdriver
-#from selenium.webdriver.chrome.options import Options
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 import os
 import time
 import webScraping as ws
@@ -40,10 +40,11 @@ def playVideos(queries):
 
         # Chromedriver download
         # had to put chromedriver.exe in same directory as python code
-        chrome_options = Options()
-        extensionPath = os.path.join('t_google_extensions')
-        chrome_options.add_extension(extensionPath)
-        driver = webdriver.Chrome(chrome_options=chrome_options)
+#        chrome_options = Options()
+#        extensionPath = '/Users/johnzupan/Library/Application Support/Google/Chrome/Default/Extensions/gighmmpiobklfepjocnamgkkbiglidom'
+#        chrome_options.add_extension(extensionPath)
+        
+        driver = webdriver.Chrome()#chrome_options=chrome_options)
         driver.get('https://www.youtube.com/watch?v={}'.format(video_id))
 
         try:
@@ -71,6 +72,6 @@ def main(url):
     addSongstoDB(url)
     finalList = songList()
     print finalList
-    #playVideos(finalList)
+    playVideos(finalList)
     
         
