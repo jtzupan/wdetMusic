@@ -38,13 +38,12 @@ def playVideos(queries):
     for q in queries:
         video_id, video_length = selen.firstVideoId(q)
 
-        # Chromedriver download
-        # had to put chromedriver.exe in same directory as python code
-#        chrome_options = Options()
-#        extensionPath = '/Users/johnzupan/Library/Application Support/Google/Chrome/Default/Extensions/gighmmpiobklfepjocnamgkkbiglidom'
-#        chrome_options.add_extension(extensionPath)
+
+        chrome_options = Options()
+        extensionPath = '/Users/johnzupan/mystuff/python_all/wdetMusic/AdBlock_v3.8.8.crx'
+        chrome_options.add_extension(extensionPath)
         
-        driver = webdriver.Chrome()#chrome_options=chrome_options)
+        driver = webdriver.Chrome(chrome_options=chrome_options)
         driver.get('https://www.youtube.com/watch?v={}'.format(video_id))
 
         try:
@@ -52,11 +51,13 @@ def playVideos(queries):
         except ValueError:
             m,s = 5,30
             
-        seconds = min(((int(m) * 60) + int(s) + 15),(330))
+        seconds = min(((int(m) * 60) + int(s) + 5),(330))
             
                 # convert to seconds 
         time.sleep(seconds)
+
         driver.close()
+        driver.quit()
         
 def songList():
     finalList = []
