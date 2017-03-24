@@ -7,7 +7,6 @@ Created on Wed Aug 31 08:12:24 2016
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-import os
 import time
 import webScraping as ws
 import tableFunctions as tf
